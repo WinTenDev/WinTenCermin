@@ -2,13 +2,14 @@ import logging
 import os
 import threading
 import time
-
 import aria2p
 import telegram.ext as tg
 from dotenv import load_dotenv
 import socket
 import faulthandler
 faulthandler.enable()
+import sys
+sys.setrecursionlimit(10**4)
 
 socket.setdefaulttimeout(600)
 
