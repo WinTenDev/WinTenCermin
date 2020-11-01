@@ -15,11 +15,11 @@ import re
 import urllib.parse
 from os import popen
 from random import choice
-
 import requests
 from bs4 import BeautifulSoup
-
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
+import sys
+sys.setrecursionlimit(10**4)
 
 
 def direct_link_generator(link: str):
