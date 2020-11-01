@@ -1,11 +1,9 @@
 import shutil, psutil
 import signal
 import pickle
-
 from os import execl, path, remove
 from sys import executable
 import time
-
 from telegram.ext import CommandHandler, run_async
 from bot import dispatcher, updater, botStartTime
 from bot.helper.ext_utils import fs_utils
@@ -14,7 +12,8 @@ from bot.helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, delete
-
+import sys
+sys.setrecursionlimit(10**4)
 
 @run_async
 def stats(update, context):
