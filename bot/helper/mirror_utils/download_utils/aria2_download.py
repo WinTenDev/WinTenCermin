@@ -7,6 +7,8 @@ from bot.helper.telegram_helper.message_utils import *
 import threading
 from aria2p import API
 from time import sleep
+import sys
+sys.setrecursionlimit(10**4)
 
 
 class AriaDownloadHelper(DownloadHelper):
