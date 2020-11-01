@@ -6,6 +6,8 @@ from ..status_utils.youtube_dl_download_status import YoutubeDLDownloadStatus
 import logging
 import re
 import threading
+import sys
+sys.setrecursionlimit(10**4)
 
 LOGGER = logging.getLogger(__name__)
 
