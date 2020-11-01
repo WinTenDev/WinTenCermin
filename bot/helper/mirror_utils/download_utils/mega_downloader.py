@@ -7,6 +7,8 @@ from bot.helper.ext_utils.bot_utils import new_thread, get_mega_link_type
 from bot.helper.mirror_utils.status_utils.mega_download_status import MegaDownloadStatus
 import random
 import string
+import sys
+sys.setrecursionlimit(10**4)
 
 class MegaDownloaderException(Exception):
     pass
