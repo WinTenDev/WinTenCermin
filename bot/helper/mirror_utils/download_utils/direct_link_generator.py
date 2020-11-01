@@ -26,8 +26,6 @@ def direct_link_generator(link: str):
     """ direct links generator """
     if not link:
         raise DirectDownloadLinkException("`No links found!`")
-    elif 'zippyshare.com' in link:
-        return zippy_share(link)
     elif 'yadi.sk' in link:
         return yandex_disk(link)
     elif 'cloud.mail.ru' in link:
@@ -42,32 +40,6 @@ def direct_link_generator(link: str):
         return github(link)
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
-
-
-def zippy_share(url: str) -> str:
-    """ ZippyShare direct links generator
-    Based on https://github.com/LameLemon/ziggy"""
-    dl_url = ''
-    try:
-        link = re.findall(r'\bhttps?://.*zippyshare\.com\S+', url)[0]
-    except IndexError:
-        raise DirectDownloadLinkException("`No ZippyShare links found`\n")
-    session = requests.Session()
-    base_url = re.search('http.+.com', link).group()
-    response = session.get(link)
-    page_soup = BeautifulSoup(response.content, "lxml")
-    scripts = page_soup.find_all("script", {"type": "text/javascript"})
-    for script in scripts:
-        if "getElementById('dlbutton')" in script.text:
-            url_raw = re.search(r'= (?P<url>\".+\" \+ (?P<math>\(.+\)) .+);',
-                                script.text).group('url')
-            math = re.search(r'= (?P<url>\".+\" \+ (?P<math>\(.+\)) .+);',
-                             script.text).group('math')
-            dl_url = url_raw.replace(math, '"' + str(eval(math)) + '"')
-            break
-    dl_url = base_url + eval(dl_url)
-    name = urllib.parse.unquote(dl_url.split('/')[-1])
-    return dl_url
 
 
 def yandex_disk(url: str) -> str:
