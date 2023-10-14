@@ -55,7 +55,7 @@ def zippy_share(url: str) -> str:
         except IndexError:
             js_script = pages.find("div", {"class": "right"}).find_all("script")[2]
         except AttributeError:
-            raise DirectDownloadLinkException("Generate direct link failed.")
+            raise DirectDownloadLinkException("Sorry, Zippyshare is dead.")
         var_a = re.findall(r"(var .*;)", js_script.string)[0]
         omg = re.findall(r"\.(omg .*;)", js_script.string)[0]
         js_var = f'{var_a} {omg} var b = omg * ((a + 3) % 3);'
