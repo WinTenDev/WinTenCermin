@@ -14,7 +14,7 @@ import urllib.parse
 from bot import LOGGER, UPTOBOX_TOKEN
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 from bs4 import BeautifulSoup
-from js2py import EvalJs
+from js2py import EvalJs, PyJsException
 from random import choice
 
 
@@ -45,22 +45,29 @@ def zippy_share(url: str) -> str:
     try:
         link = re.findall(r'\bhttps?://.*zippyshare\.com\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("No Zippyshare links found")
+        raise DirectDownloadLinkException("Tidak menemukan link ZippyShare, cek formatnya!")
     try:
         base_url = re.search('http.+.zippyshare.com', link).group()
-        response = requests.get(link).content
+        response = requests.get(link, verify=False).content
         pages = BeautifulSoup(response, "lxml")
         try:
-            js_script = pages.find("div", {"class": "center"}).find_all("script")[1]
+            js_script = pages.find("div", {"class": "center"}).find_all("script")[3]
         except IndexError:
-            js_script = pages.find("div", {"class": "right"}).find_all("script")[0]
-        js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
-        js_content = 'var x = "/' + js_content[0] + '"'
+            js_script = pages.find("div", {"class": "right"}).find_all("script")[2]
+        except AttributeError:
+            raise DirectDownloadLinkException("Generate direct link failed.")
+        var_a = re.findall(r"(var .*;)", js_script.string)[0]
+        omg = re.findall(r"\.(omg .*;)", js_script.string)[0]
+        js_var = f'{var_a} {omg} var b = omg * ((a + 3) % 3);'
+        js_content = js_var + "var x = \"/" + re.findall(r'\.href    =."/(.*?)";', js_script.string)[0] + "\""
         evaljs = EvalJs()
         setattr(evaljs, "x", None)
         evaljs.execute(js_content)
         js_content = getattr(evaljs, "x")
-        return base_url + js_content
+        return base_url + js_content, '', ''
+    except (TypeError, PyJsException) as e:
+        LOGGER.error(e)
+        raise DirectDownloadLinkException("Generate direct link failed, try again.")
     except IndexError:
         raise DirectDownloadLinkException("Can't find download button")
 
