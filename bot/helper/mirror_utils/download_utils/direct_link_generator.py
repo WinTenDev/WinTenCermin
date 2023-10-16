@@ -64,7 +64,7 @@ def zippy_share(url: str) -> str:
         setattr(evaljs, "x", None)
         evaljs.execute(js_content)
         js_content = getattr(evaljs, "x")
-        return base_url + js_content, '', ''
+        return base_url + js_content
     except (TypeError, PyJsException) as e:
         LOGGER.error(e)
         raise DirectDownloadLinkException("Generate direct link failed, try again.")
