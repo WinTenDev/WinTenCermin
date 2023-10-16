@@ -141,9 +141,10 @@ def osdn(url: str) -> str:
 
 
 def github(url: str) -> str:
-    """ GitHub direct links generator """
+    """ GitHub direct links generator
+    Based on https://github.com/jovanzers/WinTenCermin """
     try:
-        re.findall(r'\bhttps?://.*github\.com.*releases\S+', url)[0]
+        re.findall(r'\bhttps?://.*github\.com\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("No GitHub Releases links found")
     download = requests.get(url, stream=True, allow_redirects=False)
